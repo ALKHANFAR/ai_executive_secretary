@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fahad AI Executive Assistant</title>
+    <meta name="description" content="Advanced AI Executive Assistant Platform powered by Fahad" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    
+    <!-- Preconnect to font providers for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://api.fontshare.com">
+    
+    <!-- Primary fonts for Latin script -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,301,701,300,501,401,901,400&display=swap" rel="stylesheet">
+    
+    <!-- Enhanced Arabic fonts with better coverage -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Critical CSS for preventing FOUC -->
+    <style>
+      /* Critical styles to prevent flash of unstyled content */
+      html {
+        font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+        line-height: 1.5;
+      }
+      
+      /* RTL specific styles */
+      html[dir="rtl"] {
+        font-family: 'Cairo', 'Amiri', 'Noto Sans Arabic', system-ui, sans-serif;
+        text-align: right;
+        direction: rtl;
+      }
+      
+      /* Loading state */
+      .loading-state {
+        opacity: 0;
+        transition: opacity 300ms ease-in-out;
+      }
+      
+      .loading-state.loaded {
+        opacity: 1;
+      }
+      
+      /* Language transition */
+      .language-transition * {
+        transition: font-family 300ms ease-in-out, 
+                    text-align 300ms ease-in-out,
+                    direction 300ms ease-in-out !important;
+      }
+      
+      /* Arabic text enhancement */
+      .arabic-text {
+        font-feature-settings: "liga" 1, "calt" 1, "kern" 1, "mark" 1, "mkmk" 1;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        line-height: 1.6;
+        word-spacing: 0.1em;
+        letter-spacing: 0.02em;
+      }
+      
+      /* Prevent horizontal scroll during direction changes */
+      body {
+        overflow-x: hidden;
+      }
+    </style>
+    
+    <!-- Initial theme and language check script -->
+    <script>
+      (function() {
+        // Prevent flash of wrong theme
+        const darkModePreference = localStorage.getItem('darkMode') === 'true';
+        if (darkModePreference) {
+          document.documentElement.classList.add('dark');
+        }
+        
+        // Prevent flash of wrong direction
+        const language = localStorage.getItem('language') || 
+          (navigator.language.startsWith('ar') ? 'ar' : 'en');
+        
+        if (language === 'ar') {
+          document.documentElement.dir = 'rtl';
+          document.documentElement.lang = 'ar-SA';
+          document.documentElement.classList.add('rtl-layout');
+          
+          // Apply Arabic font immediately
+          document.documentElement.style.fontFamily = 'Cairo, Amiri, Noto Sans Arabic, system-ui, sans-serif';
+        } else {
+          document.documentElement.dir = 'ltr';
+          document.documentElement.lang = 'en-US';
+          document.documentElement.style.fontFamily = 'Space Grotesk, Satoshi, Inter, system-ui, sans-serif';
+        }
+        
+        // Add loading class
+        document.documentElement.classList.add('loading-state');
+        
+        // Font loading optimization
+        if ('fonts' in document) {
+          Promise.all([
+            document.fonts.load('400 16px Cairo'),
+            document.fonts.load('500 16px Cairo'),
+            document.fonts.load('600 16px Cairo'),
+            document.fonts.load('400 16px Space Grotesk'),
+            document.fonts.load('500 16px Space Grotesk')
+          ]).then(() => {
+            document.documentElement.classList.add('fonts-loaded');
+          }).catch(err => {
+            console.warn('Font loading failed:', err);
+            document.documentElement.classList.add('fonts-loaded');
+          });
+        }
+        
+        // Remove loading state after DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+          setTimeout(() => {
+            document.documentElement.classList.add('loaded');
+          }, 100);
+        });
+      })();
+    </script>
+  </head>
+  <body class="font-body bg-background dark:bg-dark-bg">
+    <div id="root"></div>
+    <script type="module" src="/src/index.jsx"></script>
+    <script id="dhws-errorTracker" src="/dhws-error-tracker.js"></script>
+    <script id="dhws-elementInspector" src="/dhws-web-inspector.js"></script>
+  </body>
+</html>
